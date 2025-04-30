@@ -7,13 +7,15 @@ import http from "http";
 import path from "path";
 import { Server, Socket } from "socket.io";
 import { fileURLToPath } from "url";
+import dotenv from "dotenv";
+dotenv.config();
 
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
+const GOOGLE_API_KEY = process.env.GEMINI_API_KEY;
 
-//postgres with vector node js
-
-const GOOGLE_API_KEY = "AIzaSyCT7K7IDZod2odOIm0ctc9_Upk8gH0g4ws";
+if (!GOOGLE_API_KEY) {
+  console.error("Error: GEMINI_API_KEY is not defined in the .env file.");
+  process.exit(1);
+}
 
 export function createBlob(audioData: string): types.Blob {
   return { data: audioData, mimeType: "audio/pcm;rate=16000" };
@@ -35,7 +37,6 @@ async function main() {
       },
     };
   }
-
 
   const ai = new GoogleGenAI(options);
   const session = await ai.live.connect({
